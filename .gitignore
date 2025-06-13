@@ -2,7 +2,6 @@
 models/
 myenv/
 __pycache__/
-*.onnx
 *.jpg
 
 # Python ignore

@@ -33,7 +33,7 @@ if 'report_data' not in st.session_state:
 @st.cache_resource
 def load_model():
     with st.spinner("🚀 Đang tải mô hình YOLO..."):
-        return YOLO("models/bestyolo.pt")
+        return YOLO(r"models/bestyolo.onnx")
 
 model = load_model()
 
@@ -289,25 +289,19 @@ if source == "📸 Hình ảnh":
         })
 
 elif source == "🎥 Video":
-    file = st.file_uploader("🎥 Tải video lên", type=["mp4", "mov", "avi"], 
+    file = st.file_uploader("Tải video lên", type=["mp4", "mov", "avi"], 
                              help="Chọn video để phân tích theo thời gian thực")
-
     if file:
-        st.video(file)  # ✅ Xem video gốc trước
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as tfile:
+            tfile.write(file.read())
+            path = tfile.name
 
-        # Tạo nút xử lý video
-        if st.button("▶️ Bắt đầu xử lý video"):
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as tfile:
-                tfile.write(file.read())
-                path = tfile.name
+        stats = process_video(path, confidence_threshold, iou_threshold)
 
-            stats = process_video(path, confidence_threshold, iou_threshold)
-
-            try:
-                os.remove(path)
-            except:
-                pass
-
+        try: 
+            os.remove(path)
+        except: 
+            pass
 
 # Hiển thị thống kê tổng quan
 if st.session_state.report_data:
