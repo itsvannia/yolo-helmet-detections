@@ -1,0 +1,14 @@
+# Bỏ qua model và môi trường ảo
+models/
+myenv/
+__pycache__/
+*.onnx
+*.jpg
+
+# Python ignore
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.DS_Store
+.env
