@@ -289,19 +289,25 @@ if source == "📸 Hình ảnh":
         })
 
 elif source == "🎥 Video":
-    file = st.file_uploader("Tải video lên", type=["mp4", "mov", "avi"], 
+    file = st.file_uploader("🎥 Tải video lên", type=["mp4", "mov", "avi"], 
                              help="Chọn video để phân tích theo thời gian thực")
+
     if file:
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as tfile:
-            tfile.write(file.read())
-            path = tfile.name
+        st.video(file)  # ✅ Xem video gốc trước
 
-        stats = process_video(path, confidence_threshold, iou_threshold)
+        # Tạo nút xử lý video
+        if st.button("▶️ Bắt đầu xử lý video"):
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as tfile:
+                tfile.write(file.read())
+                path = tfile.name
 
-        try: 
-            os.remove(path)
-        except: 
-            pass
+            stats = process_video(path, confidence_threshold, iou_threshold)
+
+            try:
+                os.remove(path)
+            except:
+                pass
+
 
 # Hiển thị thống kê tổng quan
 if st.session_state.report_data:
