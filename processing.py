@@ -5,7 +5,7 @@ import time
 import streamlit as st
 
 from utils.draw_box import draw_boxes
-from utils.report import add_report_entry
+from report import add_report_entry
 
 def process_image(image, model, confidence_threshold, iou_threshold):
     with st.spinner("🔍 Đang tiến hành nhận diện..."):
