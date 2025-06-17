@@ -7,7 +7,7 @@ import streamlit as st
 from draw_box import draw_boxes
 from report import add_report_entry
 
-def process_video(video_path, model, confidence_threshold, iou_threshold, skip_frames=7):
+def process_video(video_path, model, confidence_threshold, iou_threshold, skip_frames=3):
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
         st.error("Không mở được video. Vui lòng kiểm tra file.")
@@ -31,6 +31,7 @@ def process_video(video_path, model, confidence_threshold, iou_threshold, skip_f
     }
 
     last_display_time = 0
+    annotated_frame = None  # lưu frame đã annotate gần nhất
 
     while True:
         ret, frame = cap.read()
@@ -38,31 +39,28 @@ def process_video(video_path, model, confidence_threshold, iou_threshold, skip_f
             break
 
         frame_count += 1
-        if frame_count % skip_frames != 0:
-            continue
+        resized_frame = cv2.resize(frame, (640, 360))
 
-        loop_start_time = time.time()
+        if frame_count % skip_frames == 0:
+            loop_start_time = time.time()
 
-        # Resize tối ưu hóa
-        resized_frame = cv2.resize(frame, (416, 234))
+            # Gọi YOLO model
+            results = model(resized_frame, verbose=False, conf=confidence_threshold, iou=iou_threshold)[0]
+            annotated_frame, frame_stats = draw_boxes(resized_frame.copy(), results)
 
-        # Gọi model
-        results = model(resized_frame, verbose=False, conf=confidence_threshold, iou=iou_threshold)[0]
+            loop_time = time.time() - loop_start_time
+            actual_fps = 1.0 / loop_time if loop_time > 0 else 0
 
-        # Vẽ kết quả
-        annotated_frame, frame_stats = draw_boxes(resized_frame.copy(), results)
+            stats['helmet_counts'].append(frame_stats['helmet'])
+            stats['no_helmet_counts'].append(frame_stats['no_helmet'])
+            stats['fps_list'].append(actual_fps)
+            stats['processed_frames'] += 1
+        else:
+            if annotated_frame is None:
+                annotated_frame = resized_frame  # fallback khi chưa có kết quả nào
 
-        # FPS thực tế
-        loop_time = time.time() - loop_start_time
-        actual_fps = 1.0 / loop_time if loop_time > 0 else 0
-
-        stats['helmet_counts'].append(frame_stats['helmet'])
-        stats['no_helmet_counts'].append(frame_stats['no_helmet'])
-        stats['fps_list'].append(actual_fps)
-        stats['processed_frames'] += 1
-
-        # chỉ hiển thị mỗi 0.3s => tiết kiệm tài nguyên
-        if time.time() - last_display_time > 0.3:
+        # Hiển thị đều đặn mỗi 0.03s (~30fps hiển thị)
+        if time.time() - last_display_time > 0.03:
             stframe.image(annotated_frame, channels="BGR", use_container_width=True)
             progress_bar.progress(min(frame_count / total_frames, 1.0))
             status_text.info(f"Đang xử lý... {min(frame_count / total_frames, 1.0)*100:.1f}% hoàn thành")

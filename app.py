@@ -15,7 +15,7 @@ def load_css():
     
     """, unsafe_allow_html=True)
 
-# ======================== CONFIGURATION ========================
+# ======================== CẤU HÌNH ========================
 st.set_page_config(
     page_title="🚨 Helmet Detection System",
     page_icon="🛡️",
@@ -25,11 +25,11 @@ st.set_page_config(
 
 load_css()
 
-# ======================== INITIAL STATE ========================
+# ======================== TRẠNG THÁI BAN ĐẦU ========================
 if 'report_data' not in st.session_state:
     st.session_state.report_data = []
 
-# Load model
+# Tải model
 @st.cache_resource
 def load_model():
     with st.spinner("🚀 Đang tải mô hình YOLO..."):
@@ -71,9 +71,9 @@ def draw_boxes(image, results, actual_fps=None, font_scale_base=0.5):
         stats['no_helmet'] += int(label != 'helmet')
         stats['confidences'].append(conf)
     
-    # Tạo lớp phủ thống kê đẹp mắt ở góc trên bên trái
+    # Tạo lớp phủ thống kê ở góc trên bên trái
     if actual_fps is not None:
-        # Định nghĩa kích thước và vị trí nhỏ hơn cho hộp thống kê
+        # Kích thước và vị trí hộp thống kê
         overlay_x_end = 180 # Chiều rộng hộp thống kê
         overlay_y_end = 90  # Chiều cao hộp thống kê
         
@@ -184,7 +184,7 @@ def process_video(video_path, confidence_threshold, iou_threshold, skip_frames=5
     avg_fps = np.mean(stats['fps_list']) if stats['fps_list'] else 0
     safety_rate = (total_helmet / total_objects * 100) if total_objects > 0 else 0
 
-    # Hiển thị thống kê video - chỉ 6 thông số cần thiết
+    # Hiển thị thống kê video
     st.markdown("### 📊 Thống kê video")
     col1, col2, col3, col4, col5, col6 = st.columns(6)
     
@@ -201,7 +201,7 @@ def process_video(video_path, confidence_threshold, iou_threshold, skip_frames=5
     with col6:
         st.metric("⚡ FPS trung bình", f"{avg_fps:.2f}")
 
-    # Lưu lại dữ liệu báo cáo với thống kê tối ưu
+    # Lưu lại dữ liệu báo cáo
     st.session_state.report_data.append({
         'Thời gian': stats['start_time'],
         'Loại': 'Video',
@@ -215,7 +215,7 @@ def process_video(video_path, confidence_threshold, iou_threshold, skip_frames=5
 
     return stats
 
-# ======================== EXPORT REPORT ========================
+# ======================== XUẤT BÁO CÁO ========================
 def generate_report():
     df = pd.DataFrame(st.session_state.report_data)
 
@@ -241,7 +241,7 @@ with st.sidebar:
     - 🔴: Không đội mũ bảo hiểm
     """)
 
-# ======================== MAIN INTERFACE ========================
+# ======================== GIAO DIỆN CHÍNH ========================
 st.markdown(
     """
     <h2 style="text-align:center; color: ffffff;">🛡️ Ứng dụng nhận diện không đội mũ bảo hiểm</h2>
@@ -303,7 +303,7 @@ elif source == "🎥 Video":
         except: 
             pass
 
-# Hiển thị thống kê tổng quan
+# Thống kê tổng quan
 if st.session_state.report_data:
     st.markdown("---")
     st.subheader("📊 Lịch sử thống kê")
@@ -325,4 +325,10 @@ if st.session_state.report_data:
         if st.button("🗑️ Xóa toàn bộ lịch sử", type="primary"):
             st.session_state.report_data = []
             st.rerun()
+
+st.markdown("""
+    <div style="text-align: center; color: #888888; font-size: 1.3em; margin-top: 40px;">
+        © Nguyễn Văn Nghĩa – UTC – Đồ án tốt nghiệp – 2025
+    </div>
+""", unsafe_allow_html=True)
 
