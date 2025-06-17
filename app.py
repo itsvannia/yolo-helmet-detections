@@ -325,3 +325,4 @@ if st.session_state.report_data:
         if st.button("🗑️ Xóa toàn bộ lịch sử", type="primary"):
             st.session_state.report_data = []
             st.rerun()
+

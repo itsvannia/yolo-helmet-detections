@@ -4,17 +4,10 @@ from datetime import datetime
 import time
 import streamlit as st
 
-from utils.draw_box import draw_boxes
+from draw_box import draw_boxes
 from report import add_report_entry
 
-def process_image(image, model, confidence_threshold, iou_threshold):
-    with st.spinner("🔍 Đang tiến hành nhận diện..."):
-        results = model(image, conf=confidence_threshold, iou=iou_threshold, verbose=False)[0]
-        image_bgr = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-        annotated_image, stats = draw_boxes(image_bgr, results)
-        return cv2.cvtColor(annotated_image, cv2.COLOR_BGR2RGB), stats
-
-def process_video(video_path, model, confidence_threshold, iou_threshold, skip_frames=5):
+def process_video(video_path, model, confidence_threshold, iou_threshold, skip_frames=7):
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
         st.error("Không mở được video. Vui lòng kiểm tra file.")
@@ -37,33 +30,43 @@ def process_video(video_path, model, confidence_threshold, iou_threshold, skip_f
         'start_time': datetime.now()
     }
 
+    last_display_time = 0
+
     while True:
         ret, frame = cap.read()
         if not ret:
             break
 
         frame_count += 1
-
-        if frame_count % skip_frames != 0 and frame_count != total_frames:
-            progress_bar.progress(min(frame_count / total_frames, 1.0))
-            status_text.info(f"Đang xử lý... {min(frame_count / total_frames, 1.0)*100:.1f}% hoàn thành")
+        if frame_count % skip_frames != 0:
             continue
 
-        start = time.time()
-        resized_frame = cv2.resize(frame, (640, 360))
-        results = model(resized_frame, verbose=False, conf=confidence_threshold, iou=iou_threshold)[0]
-        actual_fps = 1.0 / (time.time() - start)
+        loop_start_time = time.time()
 
-        annotated_frame, frame_stats = draw_boxes(resized_frame.copy(), results, actual_fps=actual_fps)
+        # Resize tối ưu hóa
+        resized_frame = cv2.resize(frame, (416, 234))
+
+        # Gọi model
+        results = model(resized_frame, verbose=False, conf=confidence_threshold, iou=iou_threshold)[0]
+
+        # Vẽ kết quả
+        annotated_frame, frame_stats = draw_boxes(resized_frame.copy(), results)
+
+        # FPS thực tế
+        loop_time = time.time() - loop_start_time
+        actual_fps = 1.0 / loop_time if loop_time > 0 else 0
 
         stats['helmet_counts'].append(frame_stats['helmet'])
         stats['no_helmet_counts'].append(frame_stats['no_helmet'])
-        stats['fps_list'].append(actual_fps*3)
+        stats['fps_list'].append(actual_fps)
         stats['processed_frames'] += 1
 
-        stframe.image(annotated_frame, channels="BGR", use_container_width=True)
-        progress_bar.progress(min(frame_count / total_frames, 1.0))
-        status_text.info(f"Đang xử lý... {min(frame_count / total_frames, 1.0)*100:.1f}% hoàn thành")
+        # chỉ hiển thị mỗi 0.3s => tiết kiệm tài nguyên
+        if time.time() - last_display_time > 0.3:
+            stframe.image(annotated_frame, channels="BGR", use_container_width=True)
+            progress_bar.progress(min(frame_count / total_frames, 1.0))
+            status_text.info(f"Đang xử lý... {min(frame_count / total_frames, 1.0)*100:.1f}% hoàn thành")
+            last_display_time = time.time()
 
     cap.release()
     stats['processing_time'] = datetime.now() - stats['start_time']
