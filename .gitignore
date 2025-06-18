@@ -1,9 +1,31 @@
-# Cache, file tạm
+# Python cache & temp
 __pycache__/
-*.pyc
+*.py[cod]
 *.pyo
-*.log
+*.pyd
 *.tmp
-*.DS_Store
+*.log
+
+# 🧪 Environment
+venv/
+.env
+.env.*
+
+# Hệ điều hành
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
 
 
+# PyInstaller
+build/
+dist/
+*.spec
+
+# Streamlit cache (nếu chạy nhiều lần)
+.streamlit/
+
+# Test Reports
+reports/
