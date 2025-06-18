@@ -33,7 +33,7 @@ if 'report_data' not in st.session_state:
 @st.cache_resource
 def load_model():
     with st.spinner("🚀 Đang tải mô hình YOLO..."):
-        return YOLO("bestyolo.pt")
+        return YOLO("bestyolo.onnx")
 
 model = load_model()
 

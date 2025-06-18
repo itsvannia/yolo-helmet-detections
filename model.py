@@ -5,4 +5,4 @@ from ultralytics import YOLO
 def load_model():
     with st.spinner("🚀 Đang tải mô hình YOLO..."):
         # Thay đường dẫn model của bạn vào đây
-        return YOLO("bestyolo.pt")
+        return YOLO("bestyolo.onnx")
