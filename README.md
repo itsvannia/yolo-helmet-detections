@@ -20,23 +20,27 @@
 ```
 HELMET_DETECTION/
 │
-├── app/                    # Thư mục chứa toàn bộ code xử lý
-│   ├── main.py             # Giao diện Streamlit chính
-│   ├── load_model.py       # Load mô hình YOLO
+├── app/                    # Code xử lý chính
+│   ├── main.py             # Giao diện Streamlit
+│   ├── load_model.py       # Load mô hình
 │   ├── processing.py       # Xử lý ảnh/video
 │   ├── draw_box.py         # Vẽ bounding box
-│   └── report.py           # Lưu kết quả và tạo báo cáo
+│   └── report.py           # Tạo báo cáo
 │
-├── weights/                # Thư mục chứa mô hình YOLO
+├── assets/                 # Hình ảnh demo
+│   ├── demo_ui.png
+│   ├── demo_image.png
+│   └── demo_video.png
+│
+├── weights/                # Mô hình YOLOv8
 │   ├── bestyolo.pt
 │   └── bestyolo.onnx
 │
-├── test_images/            # Ảnh test
-├── reports/                # Kết quả nhận diện đầu ra
-├── .gitignore
-├── LICENSE
+├── test_images/            # Ảnh test đầu vào
+├── reports/                # Kết quả đầu ra
 ├── README.md
-└── requirements.txt
+├── requirements.txt
+└── .gitignore
 ```
 
 ---
@@ -49,7 +53,7 @@ git clone https://github.com/nghiands/yolo-helmet-detections.git
 cd helmet-detection
 ```
 
-### 2. Tạo môi trường ảo (tùy chọn nhưng nên dùng)
+### 2. Tạo môi trường ảo (tùy chọn)
 ```bash
 python -m venv venv
 venv\Scripts\activate     # Windows
@@ -66,39 +70,38 @@ pip install -r requirements.txt
 streamlit run app/main.py
 ```
 
-👉 Mở trình duyệt và truy cập: `http://localhost:8501`
+👉 Truy cập: `http://localhost:8501` trên trình duyệt
+
+---
+
+## 🖼️ Giao diện demo
+
+### 🌐 Giao diện chính:
+<img src="assets/demo_ui.png" width="800"/>
+
+### 🖼️ Kết quả xử lý ảnh:
+<img src="assets/demo_image.png" width="800"/>
+
+### 🎬 Kết quả xử lý video:
+<img src="assets/demo_video.png" width="800"/>
 
 ---
 
 ## 📂 Cấu hình & Tài nguyên
 
 - **Model YOLOv11**: đặt trong thư mục `weights/`
-- **Thư mục đầu vào**:
+- **Đầu vào**:
   - Ảnh: `test_images/`
-  - Video: hỗ trợ định dạng `.mp4`, `.avi`
-- **Thư mục đầu ra**:
-  - Lưu tại `reports/` gồm ảnh có box, báo cáo .csv
-
----
-
-## 🧪 Ví dụ sử dụng
-
-### ✔️ Phát hiện từ ảnh:
-- Tải ảnh lên giao diện Streamlit
-- Hệ thống sẽ trả kết quả đã gắn box
-
-### ✔️ Phát hiện từ video:
-- Tải video lên
-- Hệ thống xử lý và lưu video + kết quả
-
-### ✔️ Phát hiện từ webcam:
-- Nhấn nút kích hoạt webcam trực tiếp
+  - Video: `.mp4`, `.avi`
+- **Đầu ra**:
+  - Ảnh có bounding box lưu trong `reports/`
+  - Báo cáo lưu tự động kèm thời gian
 
 ---
 
 ## 📄 License & Tác giả
 
-- **Giấy phép**: MIT License
+- **License**: MIT License
 - **Tác giả**: Nguyễn Văn Nghĩa  
 - **Email**: vannghiands@gmail.com  
 - **GitHub**: https://github.com/nghiands
@@ -111,3 +114,4 @@ streamlit run app/main.py
 - 📊 Thống kê dữ liệu vi phạm theo thời gian
 - ☁️ Kết nối lưu dữ liệu lên **SQL hoặc Firebase**
 - 📱 Tích hợp ứng dụng điện thoại cảnh báo vi phạm
+
