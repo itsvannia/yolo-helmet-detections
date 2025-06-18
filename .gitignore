@@ -1,13 +1,9 @@
-# Bỏ qua model và môi trường ảo
-models/
-myenv/
+# Cache, file tạm
 __pycache__/
-*.jpg
-
-# Python ignore
 *.pyc
 *.pyo
-*.pyd
 *.log
+*.tmp
 *.DS_Store
-.env
+
+
