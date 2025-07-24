@@ -104,7 +104,7 @@ streamlit run app/main.py
 - **License**: MIT License
 - **Tác giả**: Nguyễn Văn Nghĩa  
 - **Email**: vannghiands@gmail.com  
-- **GitHub**: https://github.com/nghiands
+- **GitHub**: https://github.com/itsvannia
 
 ---
 
