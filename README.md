@@ -1,7 +1,7 @@
 
 # Đồ án tốt nghiệp 2025 - Nguyễn Văn Nghĩa - CNTT3-K62 - UTC
 
-Ứng dụng Học sâu trong nhận diện hành vi **không đội mũ bảo hiểm** khi tham gia giao thông bằng YOLOv11 và deploy bằng Streamlit
+Ứng dụng Học sâu trong nhận diện hành vi **không đội mũ bảo hiểm** khi tham gia giao thông bằng YOLO11 và deploy bằng Streamlit
 
 ---
 
@@ -10,7 +10,7 @@
 ✅ Nhận diện hành vi **không đội mũ bảo hiểm**  
 🎥 Xử lý **ảnh, video** theo thời gian thực  
 📁 Tự động lưu ảnh kết quả và báo cáo  
-⚡ Sử dụng **YOLOv11** tốc độ cao và chính xác  
+⚡ Sử dụng **YOLO11** tốc độ cao và chính xác  
 🧩 Giao diện đơn giản, dễ dùng với **Streamlit**
 
 ---
@@ -49,7 +49,7 @@ HELMET_DETECTION/
 
 ### 1. Clone dự án
 ```bash
-git clone https://github.com/nghiands/yolo-helmet-detections.git
+git clone https://github.com/itsvannia/yolo-helmet-detections.git
 cd helmet-detection
 ```
 
